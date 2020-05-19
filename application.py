@@ -116,7 +116,6 @@ def logout():
     return redirect("/")
 
 @app.route("/channel_check", methods=["POST"])
-@display_name_required
 def channel_check():
     # Get channel input from form using AJAX, check is channel name only contains letters and numbers
     channel = request.form["channel_input"]
@@ -347,7 +346,8 @@ def channel(channel_name):
         for row in range(len(messages[channel_name].messages)):
             message = messages[channel_name].messages[row].message
             if isinstance(message, dict):
-                message['msg'] = html.unescape(message['msg'])
+                if 'msg' in message:
+                    message['msg'] = html.unescape(message['msg'])
             else:
                 message = html.unescape(message)
             sender = messages[channel_name].messages[row].sender

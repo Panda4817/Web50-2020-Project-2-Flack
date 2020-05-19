@@ -340,6 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // When img and message sent
     socket.on('send-img', data => {
         if (location.pathname == '/'+data.channel) {
+            document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
             if (data.sender != localStorage.getItem('display_name')) {
                 const msg_div = document.createElement('div');
                 msg_div.setAttribute('class', 'd-flex justify-content-start mb-4');
@@ -440,12 +441,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector('#msg_body').append(msg_div);
                 document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
             }
+            document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
         }
     })
 
     // When img sent, dom updated
     socket.on('send-img-msg', data => {
         if (location.pathname == '/'+data.channel) {
+            document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
             if (data.sender != localStorage.getItem('display_name')) {
                 const msg_div = document.createElement('div');
                 msg_div.setAttribute('class', 'd-flex justify-content-start mb-4');
@@ -574,6 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 $('#'+data.msg_id).linkify();
                 document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
             }
+            document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
         }
     });
 
@@ -637,7 +641,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 msg_div.append(msg_cont_div);
                 document.querySelector('#msg_body').append(msg_div);
                 $('#'+data.msg_id).linkify();
-                document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
             }
             else {
                 const msg_div = document.createElement('div');
@@ -685,9 +688,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 msg_div.append(img_div);
                 document.querySelector('#msg_body').append(msg_div);
                 $('#'+data.msg_id).linkify();
-                document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
                 
             };
+            document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
         };
         
     });
