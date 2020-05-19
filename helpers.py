@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from functools import wraps
 
+# This function checks if someone trying to enter a channel has a display name ie signed in
 def display_name_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -12,6 +13,7 @@ def display_name_required(f):
 
     return decorated_function
 
+# This class stores message sender, the actual message and timestamp
 class Message(object):
 
     def __init__(self, sender, message):
@@ -19,7 +21,7 @@ class Message(object):
         self.message = message
         self.timestamp = datetime.utcnow()
 
-
+# This class stores a list of message objects
 class MessageList(object):
 
     def __init__(self, size=100):
@@ -36,6 +38,7 @@ class MessageList(object):
         if self.messages[index].sender == sender:
             self.messages[index].message = 'Message removed'
 
+# This class stores a list of clients from a particular channels
 class ClientList(object):
 
     def __init__(self):

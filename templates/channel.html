@@ -44,8 +44,11 @@
                                             <div class="msg_name_out">
                                                 {{ messages[row].sender }}
                                             </div>
-                                            {% if messages[row].message['name'] %}
-                                                <img sender="{{ messages[row].sender }}" class="msg picture" id="{{ row }}" src="{{ messages[row].message['binary'] }}" alt="{{ messages[row].message['name'] }}">
+                                            {% if messages[row].message['msg&file'] == false %}
+                                                <img sender="{{ messages[row].sender }}" class="msg picture" id="pic-{{ row }}" src="{{ messages[row].message['binary'] }}" alt="{{ messages[row].message['name'] }}">
+                                            {% elif messages[row].message['msg&file'] == true %}
+                                                <div sender="{{ messages[row].sender }}" id="{{ row }}" class="msg">{{ messages[row].message['msg'] }}</div>
+                                                <img sender="{{ messages[row].sender }}" class="msg picture" id="pic-{{ row }}" src="{{ messages[row].message['binary'] }}" alt="{{ messages[row].message['name'] }}">
                                             {% else %}
                                                 <div sender="{{ messages[row].sender }}" id="{{ row }}" class="msg">{{ messages[row].message }}</div>
                                             {% endif %}
@@ -78,8 +81,11 @@
                                             <div class="msg_name_in">
                                                 {{ messages[row].sender }}
                                             </div>
-                                            {% if messages[row].message['name'] %}
-                                                <img sender="{{ messages[row].sender }}" class="msg picture" id="{{ row }}" src="{{ messages[row].message['binary'] }}" alt="{{ messages[row].message['name'] }}">
+                                            {% if messages[row].message['msg&file'] == false %}
+                                                <img sender="{{ messages[row].sender }}" class="msg picture" id="pic-{{ row }}" src="{{ messages[row].message['binary'] }}" alt="{{ messages[row].message['name'] }}">
+                                            {% elif messages[row].message['msg&file'] == true %}
+                                                <div sender="{{ messages[row].sender }}" id="{{ row }}" class="msg">{{ messages[row].message['msg'] }}</div>
+                                                <img sender="{{ messages[row].sender }}" class="msg picture" id="pic-{{ row }}" src="{{ messages[row].message['binary'] }}" alt="{{ messages[row].message['name'] }}">
                                             {% else %}
                                                 <div sender="{{ messages[row].sender }}" id="{{ row }}" class="msg">{{ messages[row].message }}</div>
                                             {% endif %}
@@ -98,7 +104,7 @@
                         <form id="send_msg" onsubmit="return false;">
                             <div class="input-group">
                                 <div class="input-group-append">
-									<button type="button" id="attach_btn" class="input-group-text attach_btn btn" title="Attach photo"><i class="fas fa-paperclip"></i></button>
+									<button type="button" id="attach_btn" class="input-group-text attach_btn btn" title="Attach photo"><i class="far fa-image"></i></button>
 								</div>
                                 <textarea name="type_msg" class="form-control type_msg" placeholder="Type your message..."></textarea>
                                 <div class="input-group-append">

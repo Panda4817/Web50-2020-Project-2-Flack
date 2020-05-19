@@ -257,7 +257,16 @@ html, body {
   cursor: pointer;
   .msg {
     padding: 0px 10px;
+    .linkified {
+      color: $darkblue;
+      text-decoration: none;
+    }
+    .linkified:hover {
+      color: white;
+      text-decoration: underline;
+    }
   }
+  
   
 }
 .msg_container_in{
@@ -271,6 +280,14 @@ html, body {
   cursor: pointer;
   .msg {
     padding: 0px 10px;
+    .linkified {
+      color: $brightpink;
+      text-decoration: none;
+    }
+    .linkified:hover {
+      color: white;
+      text-decoration: underline;
+    }
   }
   
 }

@@ -238,6 +238,14 @@ html #delete_button:hover, body #delete_button:hover {
 .msg_container_out .msg {
   padding: 0px 10px;
 }
+.msg_container_out .msg .linkified {
+  color: #242582;
+  text-decoration: none;
+}
+.msg_container_out .msg .linkified:hover {
+  color: white;
+  text-decoration: underline;
+}
 
 .msg_container_in {
   margin-left: 10px;
@@ -251,6 +259,14 @@ html #delete_button:hover, body #delete_button:hover {
 }
 .msg_container_in .msg {
   padding: 0px 10px;
+}
+.msg_container_in .msg .linkified {
+  color: #f64c72;
+  text-decoration: none;
+}
+.msg_container_in .msg .linkified:hover {
+  color: white;
+  text-decoration: underline;
 }
 
 .msg_time_out {

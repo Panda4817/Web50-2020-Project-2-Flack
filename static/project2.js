@@ -36,8 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     };
 
-     
-
     //Set local storage for display name
     if (!(localStorage.getItem('display_name')))
         localStorage.setItem('display_name', 'display_name');
@@ -141,6 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
         delete_button();
     })
 
+    // Linkify each msg div
+    $('.msg').linkify();
+
     // File attach button
     const attachBtn = document.querySelector('#attach_btn');
     if (attachBtn != null){
@@ -226,21 +227,47 @@ document.addEventListener('DOMContentLoaded', () => {
                     fileReader.onload = () => {
                         var arrayBuffer = fileReader.result;
                         socket.emit('img-upload', {
-                            'file': {'name': file.name, 'type': file.type, 'size': file.size, 'binary': arrayBuffer}, 
+                            'file': {
+                                'msg&file': false,
+                                'name': file.name,
+                                'type': file.type, 
+                                'size': file.size, 
+                                'binary': arrayBuffer
+                            }, 
                             'channel': channel_page, 
                             'user': user
                         });
                     };
-                    const label = document.querySelector(".file-text");
-                    const defaultLabelText = "";
-                    const clearfiles = document.querySelector('#clearfiles');
-                    label.textContent = defaultLabelText;
-                    clearfiles.style.visibility = 'hidden';
+                    
+                }
+                else if (msg.length != 0 && document.querySelector('.file-upload-input').files.length != 0) {
+                    var fileReader = new FileReader();
+                    fileReader.readAsDataURL(file);
+                    fileReader.onload = () => {
+                        var arrayBuffer = fileReader.result;
+                        socket.emit('img&msg send', {
+                            'file': {
+                                'msg&file': true, 
+                                'msg': msg, 
+                                'name': file.name, 
+                                'type': file.type, 
+                                'size': file.size, 
+                                'binary': arrayBuffer
+                            }, 
+                            'channel': channel_page, 
+                            'user': user
+                        });
+                    };
                 }
                 else {
-                    document.querySelector('#send_msg').reset();
                     socket.emit('send msg', {'msg': msg, 'channel': channel_page, 'user': user});
                 }
+                document.querySelector('#send_msg').reset();
+                const label = document.querySelector(".file-text");
+                const defaultLabelText = "";
+                const clearfiles = document.querySelector('#clearfiles');
+                label.textContent = defaultLabelText;
+                clearfiles.style.visibility = 'hidden';
                 document.querySelector('.send_btn').disabled = true;
                 return false; 
             });
@@ -310,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         location.replace(`/${data.channel_name}`);
     });
 
-    // When img sent, dom updated
+    // When img and message sent
     socket.on('send-img', data => {
         if (location.pathname == '/'+data.channel) {
             if (data.sender != localStorage.getItem('display_name')) {
@@ -346,10 +373,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 sent_file.setAttribute('src', data.file.binary);
                 sent_file.setAttribute('alt', data.file.name);
                 sent_file.setAttribute('class', 'msg picture');
-                sent_file.setAttribute('id', data.msg_id);
+                sent_file.setAttribute('id', 'pic-'+data.msg_id);
                 sent_file.setAttribute('sender', data.sender);
                 sent_file.onclick = () => {
-                    msg_id = sent_file.getAttribute('id');
+                    msg_id = (sent_file.getAttribute('id').split('-'))[1];
                     msg_txt = sent_file.getAttribute('src');
                     msg_sender = sent_file.getAttribute('sender');
                     delete_button();
@@ -396,10 +423,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 sent_file.setAttribute('src', data.file.binary);
                 sent_file.setAttribute('alt', data.file.name);
                 sent_file.setAttribute('class', 'msg picture');
-                sent_file.setAttribute('id', data.msg_id);
+                sent_file.setAttribute('id', 'pic-'+data.msg_id);
                 sent_file.setAttribute('sender', data.sender);
                 sent_file.onclick = () => {
-                    msg_id = sent_file.getAttribute('id');
+                    msg_id = (sent_file.getAttribute('id').split('-'))[1];
                     msg_txt = sent_file.getAttribute('src');
                     msg_sender = sent_file.getAttribute('sender');
                     delete_button();
@@ -414,13 +441,147 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
             }
         }
+    })
+
+    // When img sent, dom updated
+    socket.on('send-img-msg', data => {
+        if (location.pathname == '/'+data.channel) {
+            if (data.sender != localStorage.getItem('display_name')) {
+                const msg_div = document.createElement('div');
+                msg_div.setAttribute('class', 'd-flex justify-content-start mb-4');
+                const img_div = document.createElement('div');
+                img_div.setAttribute('class', 'img_cont_msg');
+                const icon = document.createElement('i');
+                icon.setAttribute('class', 'fas fa-user user_img_msg_in');
+                icon.setAttribute('id', 'img'+data.msg_id);
+                img_div.append(icon);
+                const msg_cont_div = document.createElement('div');
+                msg_cont_div.setAttribute('class', 'msg_container_in mb-2');
+                msg_cont_div.setAttribute('id', 'msg'+data.msg_id);
+                const msg_name = document.createElement('div');
+                msg_name.innerHTML = data.sender;
+                msg_name.setAttribute('class', 'msg_name_in');
+                const msg_time = document.createElement('div');
+                
+                var local = new Date(data.time)
+                var now = new Date();
+                if (local.toDateString() == now.toDateString())
+                    var date = 'Today';
+                else if (local.getDate() == (now.getDate() - 1))
+                    var date = 'Yesterday';
+                else
+                    var date = local.toDateString();
+                msg_time.innerHTML = date + ' ' + local.toLocaleTimeString();
+                
+                msg_time.setAttribute('class', 'time msg_time_in');
+                
+                const msg_text = document.createElement('div');
+                msg_text.setAttribute('class', 'msg');
+                msg_text.setAttribute('id', data.msg_id);
+                msg_text.setAttribute('sender', data.sender);
+                msg_text.innerHTML = data.file.msg;
+                msg_text.onclick = () => {
+                    msg_id = msg_text.getAttribute('id');
+                    msg_txt = msg_text.innerText;
+                    msg_sender = msg_text.getAttribute('sender');
+                    delete_button();
+                };
+
+                var sent_file = document.createElement('img');
+                sent_file.setAttribute('src', data.file.binary);
+                sent_file.setAttribute('alt', data.file.name);
+                sent_file.setAttribute('class', 'msg picture');
+                sent_file.setAttribute('id', 'pic-'+data.msg_id);
+                sent_file.setAttribute('sender', data.sender);
+                sent_file.onclick = () => {
+                    msg_id = (sent_file.getAttribute('id').split('-'))[1];
+                    msg_txt = sent_file.getAttribute('src');
+                    msg_sender = sent_file.getAttribute('sender');
+                    delete_button();
+                };
+                
+                msg_cont_div.append(msg_name);
+                msg_cont_div.append(msg_text);
+                msg_cont_div.append(sent_file);
+                msg_cont_div.append(msg_time);
+                msg_div.append(img_div);
+                msg_div.append(msg_cont_div);
+                document.querySelector('#msg_body').append(msg_div);
+                $('#'+data.msg_id).linkify();
+                document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
+            }
+            else {
+                const msg_div = document.createElement('div');
+                msg_div.setAttribute('class', 'd-flex justify-content-end mb-4');
+                const img_div = document.createElement('div');
+                img_div.setAttribute('class', 'img_cont_msg');
+                const icon = document.createElement('i');
+                icon.setAttribute('class', 'fas fa-user user_img_msg_out');
+                icon.setAttribute('id', 'img'+data.msg_id);
+                img_div.append(icon);
+                const msg_cont_div = document.createElement('div');
+                msg_cont_div.setAttribute('class', 'msg_container_out mb-2');
+                msg_cont_div.setAttribute('id', 'msg'+data.msg_id);
+                const msg_name = document.createElement('div');
+                msg_name.innerHTML = data.sender;
+                msg_name.setAttribute('class', 'msg_name_out');
+                const msg_time = document.createElement('div');
+                
+                var local = new Date(data.time)
+                var now = new Date();
+                if (local.toDateString() == now.toDateString())
+                    var date = 'Today';
+                else if (local.getDate() == (now.getDate() - 1))
+                    var date = 'Yesterday';
+                else
+                    var date = local.toDateString();
+                msg_time.innerHTML = date + ' ' + local.toLocaleTimeString();
+                
+                msg_time.setAttribute('class', 'time msg_time_out');
+                
+                const msg_text = document.createElement('div');
+                msg_text.setAttribute('class', 'msg');
+                msg_text.setAttribute('id', data.msg_id);
+                msg_text.setAttribute('sender', data.sender);
+                msg_text.innerHTML = data.file.msg;
+                msg_text.onclick = () => {
+                    msg_id = msg_text.getAttribute('id');
+                    msg_txt = msg_text.innerText;
+                    msg_sender = msg_text.getAttribute('sender');
+                    delete_button();
+                };
+
+                var sent_file = document.createElement('img');
+                sent_file.setAttribute('src', data.file.binary);
+                sent_file.setAttribute('alt', data.file.name);
+                sent_file.setAttribute('class', 'msg picture');
+                sent_file.setAttribute('id', 'pic-'+data.msg_id);
+                sent_file.setAttribute('sender', data.sender);
+                sent_file.onclick = () => {
+                    msg_id = (sent_file.getAttribute('id').split('-'))[1];
+                    msg_txt = sent_file.getAttribute('src');
+                    msg_sender = sent_file.getAttribute('sender');
+                    delete_button();
+                };
+
+                msg_cont_div.append(msg_name);
+                msg_cont_div.append(msg_text);
+                msg_cont_div.append(sent_file);
+                msg_cont_div.append(msg_time);
+                msg_div.append(msg_cont_div);
+                msg_div.append(img_div);
+                document.querySelector('#msg_body').append(msg_div);
+                $('#'+data.msg_id).linkify();
+                document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
+            }
+        }
     });
 
     // When file declined
     socket.on('upload declined', () => {
         var feedback = document.querySelector('#feedback');
         feedback.style.visibility = 'visible';
-        feedback.innerHTML = 'Only allowed to attach img files';
+        feedback.innerHTML = 'Only allowed to attach image files such as JPEG, PNG or GIF';
         setTimeout( () => {
             feedback.style.visibility = 'hidden';
         }, 5000);
@@ -475,6 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 msg_div.append(img_div);
                 msg_div.append(msg_cont_div);
                 document.querySelector('#msg_body').append(msg_div);
+                $('#'+data.msg_id).linkify();
                 document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
             }
             else {
@@ -522,6 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 msg_div.append(msg_cont_div);
                 msg_div.append(img_div);
                 document.querySelector('#msg_body').append(msg_div);
+                $('#'+data.msg_id).linkify();
                 document.querySelector('#msg_body').scrollTop = document.querySelector('#msg_body').scrollHeight;
                 
             };
@@ -625,8 +788,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (var i=0, len=messages.length; i<len; i++) {
                     if (messages[i].getAttribute('id') == data.id) {
                         messages[i].innerText = 'Message removed';
-                        messages[i].alt = 'Image removed'
-                        messages[i].src = '';
                         var id_val = messages[i].getAttribute('id');
                         document.querySelector('#msg'+id_val).classList.add('delete');
                         document.querySelector('#img'+id_val).classList.add('delete_img');
@@ -635,6 +796,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             document.querySelector('#img'+id_val).style.display = 'none';
                         }, 5000);    
 
+                    };
+                    if (messages[i].getAttribute('id') == 'pic-'+data.id) {
+                        messages[i].alt = 'Image removed'
+                        messages[i].src = '';
+                        document.querySelector('#msg'+data.id).classList.add('delete');
+                        document.querySelector('#img'+data.id).classList.add('delete_img');
+                        setTimeout( () => {
+                            document.querySelector('#msg'+data.id).style.display = 'none';
+                            document.querySelector('#img'+data.id).style.display = 'none';
+                        }, 5000);    
                     };
                 };
             };

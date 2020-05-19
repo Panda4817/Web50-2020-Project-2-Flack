@@ -1,5 +1,6 @@
 import os
 import requests
+import html
 from datetime import datetime
 from tempfile import mkdtemp
 
@@ -16,6 +17,7 @@ app = Flask(__name__)
 load_dotenv("C:/Users/Kanta/Documents.env")
 
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -26,8 +28,10 @@ app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+# Set up socket.io
 socketio = SocketIO(app)
 
+# Global variables to store data
 names = []
 channels = []
 messages = {}
@@ -35,6 +39,7 @@ clients = {}
 
 @app.route("/")
 def index():
+    # Render index.html depending on if display name is chosen or not
     if session.get("display") == None:
         return render_template("index.html")
     else:
@@ -43,6 +48,7 @@ def index():
 
 @app.route("/name_check", methods=["POST"])
 def name_check():
+    # Get name from form via AJAX, check is it only has letters or numbers
     name = request.form["name_input"]
     if name != "" and name != None:
         for i in range(len(name)):
@@ -61,6 +67,7 @@ def name_check():
         result = "Display name available"
         return result
     
+    # Else display name not filled in
     else:
         result = "Display name is required"
         return result
@@ -75,7 +82,7 @@ def name():
         flash("Must provide display name", "error")
         return render_template("index.html")
     
-    # Checlk display name is only letters and numbers
+    # Check display name is only letters and numbers
     for i in name:
         if not i.isalnum():
             flash("Display name must only contain letters and/or numbers", "error")
@@ -88,11 +95,12 @@ def name():
             flash("Display name taken", "error")
             return render_template("index.html")
     
+    # Above checks passed
     session["display"] = name
     names.append(name)
     return redirect("/")
 
-
+# Personal touch to allow people to choose a different display name and logout from the app
 @app.route("/logout", methods=["GET"])
 def logout():
     # Remove from names list
@@ -110,6 +118,7 @@ def logout():
 @app.route("/channel_check", methods=["POST"])
 @display_name_required
 def channel_check():
+    # Get channel input from form using AJAX, check is channel name only contains letters and numbers
     channel = request.form["channel_input"]
     if channel != "" and channel != None:
         for i in range(len(channel)):
@@ -128,10 +137,12 @@ def channel_check():
         result = "Channel name available"
         return result
     
+    # Else channel input is empty
     else:
         result = "Channel name is required"
         return result
 
+# Update channels lists without window refresh
 @socketio.on("create channel")
 @display_name_required
 def channel_create(data):
@@ -154,6 +165,7 @@ def channel_create(data):
             flash("Channel name taken", "error")
             return render_template("index.html", channels=channels, display_name=session["display"])
     
+    # If above checks are passed, channel entered into global variables
     global messages
     global clients
     channels.append(channel)
@@ -163,19 +175,21 @@ def channel_create(data):
     emit("channel created", {"channel_name": channel}, broadcast=True)
     emit("redirect", {"channel_name": channel}, broadcast=False)
     
-
+# Send text-only message without refresh of window
 @socketio.on("send msg")
 @display_name_required
 def send_msg(data):
-    msg = data['msg']
+    # Escape html
+    msg = html.escape(data['msg'], quote=False)
+    # Check message is not empty
     if not msg:
         flash("Nothing to send", "error")
         return render_template("channel.html", channel_name=data['channel'])
-    sender = data['user']
-    if not sender:
-        flash("Must have a display name", "error")
-        return redirect("/")
     
+    # Get sender name
+    sender = data['user']
+    
+    # Enter into global variable (using class objects)
     messages[data['channel']].add_message(sender, msg)
     msg_id = len(messages[data['channel']].messages) - 1
     tc = messages[data['channel']].messages[-1].timestamp
@@ -183,12 +197,14 @@ def send_msg(data):
     
     emit("msg sent", {"msg": msg, "sender": sender, "time" : tc, "msg_id": msg_id, "channel": data['channel']}, broadcast=True)
 
+# Personal touch -  let others in the channel know when someone is typing
 @socketio.on("typing")
 @display_name_required
 def send_msg(data):
     typer_name = data['user_name']
     emit("typing", {'name': typer_name, 'channel': data['channel']}, broadcast=True)
 
+# Personal touch -  let others in the channel know when someone has joined
 @socketio.on("joined")
 @display_name_required
 def joined(data):
@@ -199,6 +215,7 @@ def joined(data):
         clients[channel_join[1]].add_client(client_name)
     emit('joined', {'user': client_name, 'channel': data['channel']}, broadcast=True)
 
+# Personal touch - let others in the channel kno when someone has left
 @socketio.on("left")
 @display_name_required
 def left(data):
@@ -209,25 +226,33 @@ def left(data):
         clients[channel_join[1]].remove_client(client_name)
     emit('left', {'user': client_name, 'channel': data['channel']}, broadcast=True)
 
+# Personal touch - be able to delete own message
 @socketio.on("delete")
 @display_name_required
 def delete(data):
     global channels
     global messages
     global clients
+    
+    # Check if the message you want to delete is your own
     if data['sender'] != session['display']:
         emit('delete_declined', broadcast=False)
+    # Else it replaces the message with standard 'message removed' and then javascript hides it
     else:
         cdelete = data['channel'].split('/')
         messages[cdelete[1]].delete_message(data['msg_index'], data['msg'], data['sender'])
         emit('delete', {'channel': data['channel'], 'id': data['msg_index']}, broadcast=True)
 
+# Personal touch -  Allow upload of image files one at a time
 @socketio.on('img-upload')
 @display_name_required
 def imageUpload(data):
+    # First check if the file type is an image
     data_type = data['file']['type'].split('/')
     if data_type[0] != 'image':
         emit('upload declined', broadcast=False)
+    
+    # Then add it to global variables, just like text-message
     else:
         messages[data['channel']].add_message(data['user'], data['file'])
         msg_id = len(messages[data['channel']].messages) - 1
@@ -235,7 +260,24 @@ def imageUpload(data):
         tc = tc.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         emit('send-img',  {"file": data['file'], "sender": data['user'], "time" : tc, "msg_id": msg_id, "channel": data['channel']}, broadcast = True)
 
+# Personal touch  - allow text and image combo
+@socketio.on('img&msg send')
+@display_name_required
+def image_msg(data):
+    # First check file is image type
+    data_type = data['file']['type'].split('/')
+    if data_type[0] != 'image':
+        emit('upload declined', broadcast=False)
+    # Then store message data in global variables, making sure the text part is html escaped
+    else:
+        data['file']['msg'] = html.escape(data['file']['msg'], quote=False)
+        messages[data['channel']].add_message(data['user'], data['file'])
+        msg_id = len(messages[data['channel']].messages) - 1
+        tc = messages[data['channel']].messages[-1].timestamp
+        tc = tc.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        emit('send-img-msg',  {"file": data['file'], "sender": data['user'], "time" : tc, "msg_id": msg_id, "channel": data['channel']}, broadcast = True)
 
+# Personal touch -  searchbar in the navbar to serarch through existing channels
 @app.route("/search_channel", methods=["POST"])
 @display_name_required
 def search_channel():
@@ -246,6 +288,7 @@ def search_channel():
         channel_correct = True
     return jsonify(json_list=channels, channel_correct=channel_correct)
 
+# Once picked a channel using the search bar, you can join that channel
 @app.route("/join_channel", methods=["POST"])
 @display_name_required
 def join_channel():
@@ -270,6 +313,7 @@ def join_channel():
     #If above checks are passes
     return redirect("/"+search_channel)
 
+# This route renders channel.html according to channel name
 @app.route("/<string:channel_name>")
 @display_name_required
 def channel(channel_name):
@@ -277,25 +321,35 @@ def channel(channel_name):
     global channels
     global messages
     global clients
+    # First check channel exists
     if channel_name not in channels:
         flash("Channel does NOT exist", "error")
         return render_template("index.html", display_name=session["display"], channels=channels)
     
+    # Then add client display name to list of clients for that channel
     if session['display'] not in clients[channel_name].clients:
         clients[channel_name].add_client(session['display'])
     
+    # Create new lists
     ml = []
     c = []
     
+    # Add list of clients to c list
     for row in range(len(clients[channel_name].clients)):
         x = clients[channel_name].clients[row]
         c.append(x)
     
+    # If no messages yet then render channel.html with no messages
     if len(messages[channel_name].messages) == 0:
         return render_template("channel.html", channel_name=channel_name, clients=c)
+    # Else messages are copied into ml list, remembering to unescape message text so it is rendered properly
     else:
         for row in range(len(messages[channel_name].messages)):
             message = messages[channel_name].messages[row].message
+            if isinstance(message, dict):
+                message['msg'] = html.unescape(message['msg'])
+            else:
+                message = html.unescape(message)
             sender = messages[channel_name].messages[row].sender
             timestamp = messages[channel_name].messages[row].timestamp
             timestamp = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
