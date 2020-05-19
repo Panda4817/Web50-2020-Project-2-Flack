@@ -1,0 +1,296 @@
+@import url("https://use.fontawesome.com/releases/v5.8.2/css/all.css");
+@import url("//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css");
+html, body {
+  max-height: 100vh;
+  overflow-x: hidden;
+  margin: 0;
+  flex-grow: 0 !important;
+  background-color: #242582;
+}
+html .jumbotron, body .jumbotron {
+  background: linear-gradient(45deg, #99738e, #f64c72, #553d67);
+  color: white;
+}
+html h1, body h1 {
+  color: #2f2fa2;
+}
+html .form, body .form {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+html .form input, body .form input {
+  background-color: rgba(47, 47, 162, 0.1) !important;
+  border: 1 !important;
+  color: #242582 !important;
+}
+html .form input:focus, body .form input:focus {
+  box-shadow: none !important;
+  outline: 0px !important;
+}
+html .form button, body .form button {
+  background: #242582;
+  color: white;
+}
+html .form button:disabled, html .form button:disabled:hover, body .form button:disabled, body .form button:disabled:hover {
+  background: #99738e;
+  color: white;
+  box-shadow: none;
+}
+html .form button:hover, body .form button:hover {
+  background-color: #f64c72;
+  color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+html nav a, body nav a {
+  color: white !important;
+}
+html nav a:hover, body nav a:hover {
+  border-color: #f64c72 !important;
+  border-radius: 5px;
+  border: 1px solid !important;
+  color: #f64c72 !important;
+}
+html nav form > button:disabled, html nav button:disabled:hover, body nav form > button:disabled, body nav button:disabled:hover {
+  background: #2f2fa2 !important;
+  color: white !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+html nav button, body nav button {
+  background: none;
+  color: white !important;
+  border-color: white !important;
+  border-radius: 5px;
+  border: 1px solid !important;
+}
+html nav button:hover, body nav button:hover {
+  background-color: #f64c72 !important;
+  border-color: #f64c72 !important;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+html .container-fluid, body .container-fluid {
+  background: linear-gradient(45deg, #99738e, #f64c72, #553d67);
+  color: white;
+}
+html .container, body .container {
+  background: #242582;
+}
+html .container p, html .container h2, html .container h3, html .container h4, html .container small, body .container p, body .container h2, body .container h3, body .container h4, body .container small {
+  color: white;
+}
+html .container #file-text, body .container #file-text {
+  text-align: left !important;
+}
+html .container #clearfiles, body .container #clearfiles {
+  appearance: none;
+  color: white;
+  background-color: none;
+  cursor: pointer;
+  margin-right: 5px;
+  visibility: hidden;
+}
+html .container ul, body .container ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+html .container ul a, body .container ul a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+html .container ul li, body .container ul li {
+  background-color: #242582;
+  border: 1px solid;
+  border-radius: 5px;
+  border-color: white;
+  padding: 1vw 10vw;
+  margin: 1vw;
+  cursor: pointer;
+}
+html .container ul li:hover, body .container ul li:hover {
+  background-color: #f64c72;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+html .container #msg_body, html .container .channel_list, body .container #msg_body, body .container .channel_list {
+  height: 60vh !important;
+  overflow-y: auto;
+}
+html .container #msg_body .picture, html .container .channel_list .picture, body .container #msg_body .picture, body .container .channel_list .picture {
+  max-width: 40vw;
+  height: auto;
+}
+html .container .users, html .container .chat, body .container .users, body .container .chat {
+  background: linear-gradient(45deg, rgba(153, 115, 142, 0.1), rgba(246, 76, 114, 0.5), rgba(85, 61, 103, 0.1));
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+html .container #users_list, body .container #users_list {
+  max-height: 60vh !important;
+  overflow-y: auto;
+}
+html .container #users_list .name, body .container #users_list .name {
+  background-color: #242582;
+  border-radius: 10px;
+  padding: 10px;
+}
+html .container #users_list .me, body .container #users_list .me {
+  background-color: #f64c72 !important;
+}
+html #feedback, body #feedback {
+  color: white;
+  visibility: hidden;
+}
+html #delete_button, body #delete_button {
+  color: white;
+  visibility: hidden;
+  background: #242582;
+}
+html #delete_button:hover, body #delete_button:hover {
+  background-color: #f64c72;
+  color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.alert {
+  margin-left: 25% !important;
+  width: 50%;
+  z-index: 2;
+  position: absolute;
+}
+
+.ui-widget {
+  z-index: 2;
+}
+
+.type_msg {
+  height: 60px !important;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border: 0 !important;
+  color: white !important;
+}
+
+.type_msg:focus {
+  box-shadow: none !important;
+  outline: 0px !important;
+}
+
+.send_btn:disabled, .send_btn:disabled:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border: 0 !important;
+  color: white !important;
+}
+
+.send_btn, .attach_btn {
+  cursor: pointer;
+  background-color: #242582 !important;
+  border: 0 !important;
+  color: white !important;
+}
+
+.attach_btn {
+  border-radius: 5px 0px 0px 5px !important;
+}
+
+.send_btn:hover, .attach_btn:hover {
+  background-color: #f64c72 !important;
+  border: 0 !important;
+  color: white !important;
+}
+
+.img_cont_msg {
+  height: auto;
+  width: auto;
+}
+
+.delete_img {
+  color: #99738e !important;
+}
+
+.user_img_msg_out {
+  color: #f64c72;
+}
+
+.user_img_msg_in {
+  color: #242582;
+}
+
+.delete {
+  background-color: #99738e !important;
+  color: #553d67 !important;
+  font-style: italic !important;
+  font-size: x-small !important;
+  cursor: default !important;
+}
+
+.msg_container_out {
+  margin-right: 10px;
+  border-radius: 10px;
+  background-color: #f64c72;
+  color: white;
+  position: relative;
+  text-align: left;
+  flex-wrap: wrap;
+  cursor: pointer;
+}
+.msg_container_out .msg {
+  padding: 0px 10px;
+}
+
+.msg_container_in {
+  margin-left: 10px;
+  border-radius: 10px;
+  background-color: #242582;
+  color: white;
+  position: relative;
+  text-align: left;
+  flex-wrap: wrap;
+  cursor: pointer;
+}
+.msg_container_in .msg {
+  padding: 0px 10px;
+}
+
+.msg_time_out {
+  position: relative;
+  bottom: -15px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.msg_time_in {
+  position: relative;
+  bottom: -15px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.msg_name_out {
+  position: relative;
+  top: -15px;
+  left: -10px;
+  font-size: 10px;
+  text-align: right;
+}
+
+.msg_name_in {
+  position: relative;
+  top: -15px;
+  right: -10px;
+  font-size: 10px;
+  text-align: left;
+}
+
+.fa-chevron-up {
+  color: white;
+  font-size: 5vw;
+  transition: transform 0.3s ease-out;
+}
+
+.fa-chevron-up:hover {
+  transform: translateY(-10px);
+}
+
+/*# sourceMappingURL=styles.css.map */

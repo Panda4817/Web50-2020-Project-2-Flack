@@ -1,0 +1,312 @@
+@import url('https://use.fontawesome.com/releases/v5.8.2/css/all.css');
+@import url('//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css');
+
+$darkblue: rgb(36, 37, 130);
+$darkpurple: rgb(85, 61, 103);
+$brightpink: rgb(246, 76, 114);
+$lightpurple: rgb(153, 115, 142);
+$lightblue: rgb(47, 47, 162);
+
+html, body {
+  max-height: 100vh;
+  overflow-x: hidden;
+  margin: 0;
+  flex-grow: 0 !important;
+  background-color: $darkblue;
+
+  .jumbotron {
+    background: linear-gradient(45deg, $lightpurple, $brightpink, $darkpurple);
+    color: white;
+  }
+  h1 {
+    color: $lightblue;
+  }
+
+  .form {
+    background: rgba(255,255,255, 0.9);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    input {
+      background-color: rgba(47, 47, 162, 0.1) !important;
+      border: 1 !important;
+      color: $darkblue !important;
+    }
+    input:focus{
+      box-shadow:none !important;
+      outline:0px !important;
+    }
+    button {
+      background: $darkblue;
+      color: white;
+    }
+    button:disabled, button:disabled:hover {
+      background: $lightpurple;
+      color: white;
+      box-shadow: none;
+    }
+    button:hover {
+      background-color: $brightpink;
+      color: white;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+  }
+
+  nav {
+    a {
+      color: white !important;
+    }
+    a:hover{
+      border-color: $brightpink !important;
+      border-radius: 5px;
+      border: 1px solid!important;
+      color: $brightpink !important;
+    }
+    
+    form > button:disabled, button:disabled:hover {
+      background: $lightblue !important;
+      color: white !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+    button {
+      background: none;
+      color: white !important;
+      border-color: white !important;
+      border-radius: 5px;
+      border: 1px solid !important;
+    }
+    button:hover {
+      background-color: $brightpink !important;
+      border-color: $brightpink !important;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+  }
+
+  .container-fluid {
+    background: linear-gradient(45deg, $lightpurple, $brightpink, $darkpurple);
+    color: white;
+  }
+  .container {
+    background: $darkblue;
+    p, h2, h3, h4, small{
+      color: white;
+    }
+    #file-text {
+      text-align: left !important;
+    }
+    #clearfiles {
+      appearance: none;
+      color: white;
+      background-color: none;
+      cursor: pointer;
+      margin-right: 5px;
+      visibility: hidden;
+    }
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+      }
+      li {
+        background-color: $darkblue;
+        border: 1px solid;
+        border-radius: 5px;
+        border-color: white;
+        padding: 1vw 10vw;
+        margin: 1vw;
+        cursor: pointer;
+      }
+      li:hover {
+        background-color: $brightpink;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+      
+    }
+    #msg_body, .channel_list {
+      height: 60vh !important;
+      overflow-y: auto;
+      .picture {
+        max-width: 40vw;
+        height: auto;
+      }
+    }
+
+    .users, .chat {
+      background: linear-gradient(45deg, rgba(153, 115, 142, 0.1), rgba(246, 76, 114, 0.5), rgba(85, 61, 103, 0.1));
+      border-radius: 5px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    #users_list {
+      max-height: 60vh !important;
+      overflow-y: auto;
+      .name {
+        background-color: $darkblue;
+        border-radius: 10px;
+        padding: 10px;
+      }
+      .me {
+        background-color: $brightpink !important;
+      }
+    }
+  }
+
+  #feedback {
+    color: white;
+    visibility: hidden;
+  }
+  #delete_button {
+    color: white;
+    visibility: hidden;
+    background: $darkblue;
+  }
+ 
+  #delete_button:hover {
+    background-color: $brightpink;
+    color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+
+}
+
+
+.alert {
+    margin-left: 25% !important;
+    width: 50%;
+    z-index: 2;
+    position:  absolute; 
+  }
+
+.ui-widget {
+  z-index: 2;
+}
+
+.type_msg{
+  height: 60px !important;
+  overflow-y: auto;
+  background-color: rgba(0,0,0,0.3) !important;
+  border:0 !important;
+  color:white !important;
+}
+.type_msg:focus{
+  box-shadow:none !important;
+  outline:0px !important;
+}
+
+.send_btn:disabled, .send_btn:disabled:hover{
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border:0 !important;
+  color: white !important;
+}
+
+.send_btn, .attach_btn {
+  cursor: pointer;
+  background-color: rgba(36, 37, 130) !important;
+  border:0 !important;
+  color: white !important;
+}
+.attach_btn {
+  border-radius: 5px 0px 0px 5px !important;
+}
+.send_btn:hover, .attach_btn:hover {
+  background-color: rgb(246, 76, 114) !important;
+  border:0 !important;
+  color: white !important;
+}
+
+
+
+
+.img_cont_msg{
+  height: auto;
+  width: auto;
+}
+
+.delete_img {
+  color: $lightpurple !important;
+}
+
+.user_img_msg_out{
+  color: $brightpink;
+}
+
+.user_img_msg_in{
+  color: $darkblue;
+}
+
+.delete {
+  background-color: $lightpurple !important;
+  color: $darkpurple !important;
+  font-style: italic !important;
+  font-size: x-small !important;
+  cursor: default !important;
+}
+
+.msg_container_out{
+  margin-right: 10px;
+  border-radius: 10px;
+  background-color: $brightpink;
+  color: white;
+  position: relative;
+  text-align: left;
+  flex-wrap: wrap;
+  cursor: pointer;
+  .msg {
+    padding: 0px 10px;
+  }
+  
+}
+.msg_container_in{
+  margin-left: 10px;
+  border-radius: 10px;
+  background-color: $darkblue;
+  color: white;
+  position: relative;
+  text-align: left;
+  flex-wrap: wrap;
+  cursor: pointer;
+  .msg {
+    padding: 0px 10px;
+  }
+  
+}
+.msg_time_out{
+  position: relative;
+  bottom: -15px;
+  font-size: 10px;
+  text-align: center;
+}
+.msg_time_in{
+  position: relative;
+  bottom: -15px;
+  font-size: 10px;
+  text-align: center;
+}
+.msg_name_out {
+  position: relative;
+  top: -15px;
+  left: -10px;
+  font-size: 10px;
+  text-align: right;
+}
+
+.msg_name_in {
+  position: relative;
+  top: -15px;
+  right: -10px;
+  font-size: 10px;
+  text-align: left;
+}
+
+.fa-chevron-up {
+  color: white;
+  font-size: 5vw;
+  transition: transform 0.3s ease-out;
+}
+.fa-chevron-up:hover {
+  transform: translateY(-10px);
+}

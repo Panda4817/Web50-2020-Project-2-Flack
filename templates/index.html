@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Flack
+{% endblock %}
+
+{% block header %}
+    <div class="jumbotron jumbotron-fluid mb-0">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <h1 class="text-center title"><i class="far fa-comments"></i><span class="font-weight-light">Chat with</span> Flack</h1>
+            </div>
+            {% if session.display %}
+            <div class="row justify-content-center p-3">  
+                <h2 >Hello, <span id="display_name" class="font-weight-light">{{ display_name }}</span></h2>
+            </div>
+            <div class="row justify-content-center p-3">
+               <p class="lead">Create a channel, join an existing channel from the list below or search channels from the navbar</p> 
+            </div>
+            <div id="create-channel" class="row justify-content-center text-center p-3">
+                <div class="col-md-6 form p-4 border rounded">
+                    <form id="create_channel">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="channel" name="channel" placeholder="Enter channel name (Case-sensitive)" pattern="^[a-zA-Z0-9]*$" title="Only letters and/or numbers" required>
+                            <small id="channel_check"></small>
+                        </div>
+                        <button type="submit" class="btn btn-block" id="channel_button" disabled>Create Channel</button>
+                    </form> 
+                </div>
+            </div>
+                {% else %}
+            <div class="row justify-content-center">
+                <p class="lead">Sign in by creating a display name</p>
+            </div>
+            <div class="row justify-content-center p-3">
+                <div class="col-md-6 form p-4 border rounded">
+                   <form id="display_name" action="/index_name" method="POST">
+                        <div class="form-group text-center">
+                            <input type="text" class="form-control" id="display" name="display" placeholder="Enter display name (Case-sensitive)" pattern="^[a-zA-Z0-9]*$" title="Only letters and/or numbers" required>
+                            <small id="name_check"></small>
+                        </div>
+                        <button type="submit" class="btn btn-block" id="display_button" disabled>Sign In</button>
+                    </form> 
+                </div>
+            </div>
+                {% endif %}
+            </div>
+        </div>
+{% endblock %}
+
+{% block main %}
+    {% if session.display %}
+        {% if channels|length == 0 %}
+        <div class="container">
+            <div class="row justify-content-center p-3"> 
+                <p id="no_channels" class="lead">No channels created yet</p>
+                <h2 id="join_channel" style="visibility: hidden;">Channel List:</h2>
+            </div>
+            <div class="row justify-content-center">
+            <ul id="channels" class="channel_list">
+            </ul> 
+            </div>
+        </div>
+        {% else %}
+        <div class="container">
+            <div class="row justify-content-center p-3">
+                <p id="no_channels" class="lead" style="display: none;">No channels created yet</p>
+                <h2 id="join_channel">Channel List:</h2>
+            </div>
+            <div class="row justify-content-center">
+                <ul id="channels" class="channel_list">
+                    {% for row in channels %}
+                    <li>
+                        <a href="{{ url_for('channel', channel_name=row) }}">{{ row }}</a>
+                    </li>
+                    {% endfor %}
+                </ul> 
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

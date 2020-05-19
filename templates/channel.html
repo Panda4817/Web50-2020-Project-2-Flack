@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Channel: {{ channel_name }}
+{% endblock %}
+
+{% block header %}
+<div class="container-fluid">
+    <div class="row justify-content-center text-center p-3">
+        <div class="col">
+            <h2>Channel: <span id="channel_name">{{ channel_name }}</span></h2>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="row justify-content-between p-3">
+            <div class="col-md-3 users m-1 p-3">
+                <h3>Channel Users</h3>
+                <div id="users_list">
+                    {% for row in range(clients|length) %}
+                        {% if clients[row] == session.display %}
+                            <h4 class="name me font-weight-light">{{ clients[row] }}</h4>
+                        {% else %}
+                            <h4 class="name font-weight-light">{{ clients[row] }}</h4>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-8 chat m-1 p-3">
+                <div id="feedback" class="feedback p-3">feedback</div>
+                <div id="msg_body" class="p-3">
+                    {% if messages %}
+                        {% for row in range(messages|length) %}
+                            {% if messages[row].sender == session.display %}
+                                <div class="d-flex justify-content-end mb-4">
+                                    {% if messages[row].message == 'Message removed' %}
+                                        <div id="msg{{ row }}" class="delete msg_container_out mb-2" style="display: none;">
+                                    {% else %}
+                                        <div id="msg{{ row }}" class="msg_container_out mb-2">
+                                    {% endif %}
+                                            <div class="msg_name_out">
+                                                {{ messages[row].sender }}
+                                            </div>
+                                            {% if messages[row].message['name'] %}
+                                                <img sender="{{ messages[row].sender }}" class="msg picture" id="{{ row }}" src="{{ messages[row].message['binary'] }}" alt="{{ messages[row].message['name'] }}">
+                                            {% else %}
+                                                <div sender="{{ messages[row].sender }}" id="{{ row }}" class="msg">{{ messages[row].message }}</div>
+                                            {% endif %}
+                                            <div class="time msg_time_out">
+                                                {{ messages[row].timestamp }}
+                                            </div>
+                                        </div>
+                                    <div class="img_cont_msg">
+                                    {% if messages[row].message == 'Message removed' %}
+                                        <i id="img{{ row }}" class="delete_img fas fa-user user_img_msg_out" style="display: none;"></i>
+                                    {% else %}
+                                        <i id="img{{ row }}" class="fas fa-user user_img_msg_out"></i>
+                                    {% endif %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="d-flex justify-content-start mb-4">
+                                    <div class="img_cont_msg">
+                                    {% if messages[row].message == 'Message removed' %}
+                                        <i id="img{{ row }}" class="delete_img fas fa-user user_img_msg_in" style="display: none;"></i>
+                                    {% else %}
+                                        <i id="img{{ row }}" class="fas fa-user user_img_msg_in"></i>
+                                    {% endif %}
+                                    </div>
+                                    {% if messages[row].message == 'Message removed' %}
+                                        <div id="msg{{ row }}" class="delete msg_container_in mb-2" style="display: none;">
+                                    {% else %}
+                                        <div id="msg{{ row }}" class="msg_container_in mb-2">
+                                    {% endif %}
+                                            <div class="msg_name_in">
+                                                {{ messages[row].sender }}
+                                            </div>
+                                            {% if messages[row].message['name'] %}
+                                                <img sender="{{ messages[row].sender }}" class="msg picture" id="{{ row }}" src="{{ messages[row].message['binary'] }}" alt="{{ messages[row].message['name'] }}">
+                                            {% else %}
+                                                <div sender="{{ messages[row].sender }}" id="{{ row }}" class="msg">{{ messages[row].message }}</div>
+                                            {% endif %}
+                                            <div class="time msg_time_in">
+                                                {{ messages[row].timestamp }}
+                                            </div>
+                                        </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <button id="delete_button" class="btn btn-block">Delete message</button>
+                <div id="send_form" class="row justify-content-center text-center fixed">
+                    <div class="col p-3">
+                        <form id="send_msg" onsubmit="return false;">
+                            <div class="input-group">
+                                <div class="input-group-append">
+									<button type="button" id="attach_btn" class="input-group-text attach_btn btn" title="Attach photo"><i class="fas fa-paperclip"></i></button>
+								</div>
+                                <textarea name="type_msg" class="form-control type_msg" placeholder="Type your message..."></textarea>
+                                <div class="input-group-append">
+                                    <button type="submit" class="input-group-text send_btn btn" title="Send" disabled><i class="fas fa-location-arrow"></i></button>
+                                </div>
+                            </div>
+                            <span id="clearfiles">&times;</span><small id="file_text" class="file-text"></small>
+                            <input class="file-upload-input" type="file" name="myFile" id="myFile" hidden='hidden' accept="image/*">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
