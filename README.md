@@ -8,7 +8,7 @@ This contains app config, all routes including socketio routes. These routes inl
 
 ## helpers.py
 
-This contains a function that checks if someone is signed in, if not theay cannot enter channels. This file also contains some class objects I created to help store message information and client information for each channel.
+This contains a function that checks if someone is signed in, if not they cannot enter channels. This file also contains some class objects I created to help store message information and client information for each channel.
 
 ## requirements.txt
 
