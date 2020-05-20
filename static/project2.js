@@ -278,7 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
         for (var i=0, len=nava.length; i<len; i++) {
             nava[i].onclick = () => {
                 let c = localStorage.getItem('channel');
-                socket.emit('left', {'channel': c, 'user': localStorage.getItem('display_name')});
+                if (c != 'channel') {
+                  socket.emit('left', {'channel': c, 'user': localStorage.getItem('display_name')});  
+                }
                 localStorage.setItem('channel', 'channel');
             };
         };
@@ -290,7 +292,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.forget').onclick = () => {
                 let c = localStorage.getItem('channel');
                 let d = localStorage.getItem('display_name');
-                socket.emit('left', {'channel': c, 'user': d});
+                if (c != 'channel') {
+                    socket.emit('left', {'channel': c, 'user': d});
+                }
                 localStorage.setItem('channel', 'channel');
                 localStorage.setItem('display_name', 'display_name');
             };
@@ -298,7 +302,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // When click on search bar join button, remove from old channel, reset channel name
             document.querySelector('#search_button').onclick = () => {
                 let c = localStorage.getItem('channel');
-                socket.emit('left', {'channel': c, 'user': localStorage.getItem('display_name')});
+                if (c != 'channel') {
+                    socket.emit('left', {'channel': c, 'user': localStorage.getItem('display_name')});  
+                }
                 localStorage.setItem('channel', 'channel')
             };
         }
